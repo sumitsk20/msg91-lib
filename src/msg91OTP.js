@@ -77,9 +77,8 @@ class Msg91 {
                 }
             }
             opts = Object.assign({}, opts, args);
-            console.log(opts.message)
             try {
-                opts.message = opts.messageTemplate.replace('{{otp}}', opts.otp)
+                opts.message = opts.message.replace('{{otp}}', opts.otp)
             } catch (error) {
                 reject(new Error('Message template does not contain "{{otp}}"'));
             };
