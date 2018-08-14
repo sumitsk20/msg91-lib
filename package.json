@@ -1,0 +1,23 @@
+{
+  "name": "msg91-lib",
+  "version": "1.0.0",
+  "description": "Unoffical msg91 library to send OTP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "msg91",
+    "otp",
+    "sendotp",
+    "send-otp",
+    "send-message",
+    "msg91-sendotp",
+    "msg91-message"
+  ],
+  "author": "Sumeet Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
