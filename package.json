@@ -1,6 +1,6 @@
 {
   "name": "msg91-lib",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Unofficial msg91 library to send OTP & messages",
   "main": "index.js",
   "scripts": {

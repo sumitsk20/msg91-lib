@@ -132,10 +132,10 @@ class Msg91 {
                 if (response.data.errors !== undefined) {
                     reject(response.data.errors);
                 }
-                resolve(JSON.stringify(response.data));
+                resolve(response.data);
             }).catch((error) => {
                 //return the error object received from server
-                reject(JSON.stringify(error));
+                reject(error);
             });
         });
     }
