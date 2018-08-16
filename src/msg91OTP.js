@@ -3,7 +3,7 @@
  * @description: This file is responsible for code sending, resending and verifying the otp by calling MSG91 APIs.
  */
 
-"use strict";
+'use strict';
 
 const axios = require('axios');
 const qs = require('querystring');
@@ -14,7 +14,7 @@ const MSG91 = axios.create({
     headers: { 'content-type': 'application/x-www-form-urlencoded' }
 });
 
-class Msg91 {
+class Msg91Otp {
     /**
      * Creates a new SendOtp instance
      * @param {string} authKey Authentication key
@@ -43,7 +43,6 @@ class Msg91 {
      */
     static generateOtp(length) {
         length = length || 4;
-
         return Math.floor(Math.pow(10, length - 1) + Math.random() * 9000);
     }
 
@@ -55,11 +54,11 @@ class Msg91 {
      */
     send(contactNumber, args) {
         return new Promise((resolve, reject) => {
-            let otp = Msg91.generateOtp()
+            let otp = Msg91Otp.generateOtp()
 
             if (args && args.otp_length) {
-                if (args.otp_length > 6) {reject(new Error('OTP can be maximum of 6 digit'));}
-                otp = Msg91.generateOtp(args.otp_length);
+                if (args.otp_length > 6) {return reject(new Error('OTP can be maximum of 6 digit'));}
+                otp = Msg91Otp.generateOtp(args.otp_length);
             }
             let opts = {
                 authkey: this.authKey,
@@ -70,19 +69,19 @@ class Msg91 {
             };
             if (args) {
                 if (typeof args !== 'object') {
-                    reject(new Error('Expected object of arguments'));
+                    return reject(new Error('Expected object of arguments'));
                 }
                 if (args.otp_expiry && typeof args.otp_expiry !== 'number' && !(1441 < args.otp_expiry < 0)) {
-                    reject(new Error('Expected numeric value in range of 1440-1.'));
+                    return reject(new Error('Expected numeric value in range of 1440-1.'));
                 }
             }
             opts = Object.assign({}, opts, args);
             try {
                 opts.message = opts.message.replace('{{otp}}', opts.otp)
             } catch (error) {
-                reject(new Error('Message template does not contain "{{otp}}"'));
+                return reject(new Error('Message template does not contain "{{otp}}"'));
             };
-            resolve(Msg91.doRequest("sendotp.php", opts));
+            resolve(Msg91Otp.doRequest("sendotp.php", opts));
         });
     }
 
@@ -103,7 +102,7 @@ class Msg91 {
                 mobile: contactNumber,
                 retrytype: retryType
             };
-            resolve(Msg91.doRequest("retryotp.php", opts));
+            resolve(Msg91Otp.doRequest("retryotp.php", opts));
         });
     }
 
@@ -114,13 +113,13 @@ class Msg91 {
      * Return promise 
      */
     verify(contactNumber, otp) {
-        return new Promise((resolve, reeject) => {
+        return new Promise((resolve, reject) => {
             let opts = {
                 authkey: this.authKey,
                 mobile: contactNumber,
                 otp: otp
             };
-            resolve(Msg91.doRequest("verifyRequestOTP.php", opts));
+            resolve(Msg91Otp.doRequest("verifyRequestOTP.php", opts));
         });
     }
 
@@ -130,14 +129,14 @@ class Msg91 {
                 // response object errors
                 // This should return an error object not an array of errors
                 if (response.data.errors !== undefined) {
-                    reject(response.data.errors);
+                    return reject(response.data.errors);
                 }
                 resolve(response.data);
             }).catch((error) => {
                 //return the error object received from server
-                reject(error);
+                return reject(error);
             });
         });
     }
 }
-module.exports = Msg91;
+module.exports = Msg91Otp;
