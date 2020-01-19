@@ -80,7 +80,7 @@ class Msg91Otp {
                 opts.message = opts.message.replace('{{otp}}', opts.otp)
             } catch (error) {
                 return reject(new Error('Message template does not contain "{{otp}}"'));
-            };
+            }
             resolve(Msg91Otp.doRequest("sendotp.php", opts));
         });
     }
