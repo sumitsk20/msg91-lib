@@ -1,6 +1,6 @@
 {
   "name": "msg91-lib",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Unofficial msg91 library to send OTP & messages",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/sumitsk20/msg91-lib.git"
   },
-  "homepage": "https://github.com/sumitsk20/msg91-lib/",
+  "homepage": "https://github.com/sumitsk20/msg91-lib/tree/v2.x",
   "keywords": [
     "msg91",
     "otp",
@@ -22,7 +22,5 @@
   ],
   "author": "Sumeet Kumar",
   "license": "MIT",
-  "dependencies": {
-    "axios": "^0.18.0"
-  }
+  "dependencies": {}
 }

@@ -1,0 +1,93 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-console": "warn",
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "semi-style": [
+      "error",
+      "last"
+    ],
+    "spaced-comment": [
+      "error",
+      "always"
+    ],
+    "prefer-template": "error",
+    "no-var": "error",
+    "constructor-super": "error",
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "curly": [
+      "error",
+      "multi",
+      "consistent"
+    ],
+    "eqeqeq": [
+      "error",
+      "smart"
+    ],
+    "no-redeclare": [
+      "error",
+      {
+        "builtinGlobals": true
+      }
+    ],
+    "no-unused-labels": "warn",
+    "no-unused-vars": "warn",
+    "no-useless-catch": "off",
+    // "strict": [
+    //   "error",
+    //   "global"
+    // ],
+    "multiline-comment-style": [
+      "error",
+      "starred-block"
+    ],
+    "no-mixed-spaces-and-tabs": "error",
+    "no-trailing-spaces": [
+      "error",
+      {
+        "ignoreComments": true
+      }
+    ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 2,
+        "maxEOF": 1
+      }
+    ]
+  },
+  "globals": {
+    "fastify": "readonly"
+  }
+}

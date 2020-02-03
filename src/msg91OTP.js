@@ -5,138 +5,100 @@
 
 'use strict';
 
-const axios = require('axios');
-const qs = require('querystring');
-
-// Initialize axios with Base URL for MSG91 api call
-const MSG91 = axios.create({
-    baseURL: "https://control.msg91.com/api/",
-    headers: { 'content-type': 'application/x-www-form-urlencoded' }
-});
-
+const makeRequest = require('./requestUtility');
+const { errorCodes } = require('./errorUtility');
 class Msg91Otp {
-    /**
-     * Creates a new SendOtp instance
-     * @param {string} authKey Authentication key
-     * @param {string, optional} senderId Sender ID of 6 digit
-     * @param {string, optional} messageTemplate message template containing {{otp}}
-     */
-    constructor(authKey, senderId, messageTemplate) {
-        this.authKey = authKey;
-        this.otp_expiry = 1440;
-        if (messageTemplate) {
-            this.messageTemplate = messageTemplate;
-        } else {
-            this.messageTemplate = "{{otp}} is your otp. Please do not share it with anybody";
-        }
-        if (senderId) {
-            this.senderId = senderId;
-        } else {
-            this.senderId = "SUMEET";
-        }
-    }
+  /**
+   * Creates a new SendOtp instance
+   * @param {string} authKey Authentication key.
+   * @param {string} TemplateId of message to send.
+   */
+  constructor(args = {}) {
+    if (!args.authKey) throw new errorCodes['NO_AUTH_KEY']();
+    if (!args.templateId) throw new errorCodes['NO_TEMPLATE_ID']();
 
-    /**
-     * Returns the n digit otp
-     * @param {integer}
-     * @returns {integer}
-     */
-    static generateOtp(length) {
-        length = length || 4;
-        return Math.floor(Math.pow(10, length - 1) + Math.random() * 9000);
-    }
+    this.authKey = args.authKey;
+    this.defaultOtpTemplateId = args.templateId;
 
-    /**
-     * Send Otp to given mobile number
-     * @param {string} contactNumber receiver's mobile number along with country code
-     * @param {object, optional} args
-     * Return promise 
-     */
-    send(contactNumber, args) {
-        return new Promise((resolve, reject) => {
-            let otp = Msg91Otp.generateOtp()
+    this.baseUrl = args.baseUrl || 'https://api.msg91.com/api';
+    this.apiVersion = args.apiVersion || 'v5';
+    this.defaultOtpExpiry = Number(args.otpExpiry) || 5;
+    this.defaultOtpLength = Number(args.otpLength) || 4;
 
-            if (args && args.otp_length) {
-                if (args.otp_length > 6) {return reject(new Error('OTP can be maximum of 6 digit'));}
-                otp = Msg91Otp.generateOtp(args.otp_length);
-            }
-            let opts = {
-                authkey: this.authKey,
-                mobile: contactNumber,
-                sender: this.senderId,
-                otp: otp,
-                message: this.messageTemplate
-            };
-            if (args) {
-                if (typeof args !== 'object') {
-                    return reject(new Error('Expected object of arguments'));
-                }
-                if (args.otp_expiry && typeof args.otp_expiry !== 'number' && !(1441 < args.otp_expiry < 0)) {
-                    return reject(new Error('Expected numeric value in range of 1440-1.'));
-                }
-            }
-            opts = Object.assign({}, opts, args);
-            try {
-                opts.message = opts.message.replace('{{otp}}', opts.otp)
-            } catch (error) {
-                return reject(new Error('Message template does not contain "{{otp}}"'));
-            };
-            resolve(Msg91Otp.doRequest("sendotp.php", opts));
-        });
-    }
+    this.APIs = {
+      sendOtp: { url: `${this.baseUrl}/${this.apiVersion}/otp`, method: 'POST' },
+      resendOtp: { url: `${this.baseUrl}/${this.apiVersion}/otp/retry`, method: 'POST' },
+      verifyOtp: { url: `${this.baseUrl}/${this.apiVersion}/otp/verify`, method: 'POST' },
+    };
 
-    /**
-     * Retry Otp to given mobile number
-     * @param {string} contactNumber receiver's mobile number along with country code
-     * @param {boolean} retryVoice, set true to enable voice call verification
-     * Return promise 
-     */
-    retry(contactNumber, retryVoice) {
-        return new Promise((resolve, reject) => {
-            let retryType = 'voice';
-            if (!retryVoice) {
-                retryType = 'text'
-            }
-            let opts = {
-                authkey: this.authKey,
-                mobile: contactNumber,
-                retrytype: retryType
-            };
-            resolve(Msg91Otp.doRequest("retryotp.php", opts));
-        });
-    }
+    this.send = this.send.bind(this);
+    this.retry = this.retry.bind(this);
+    this.verify = this.verify.bind(this);
+    // this.makeRequest = this.makeRequest.bind(this);
 
-    /**
-     * Verify Otp to given mobile number
-     * @param {string} contactNumber receiver's mobile number along with country code
-     * @param {string} otp otp to verify
-     * Return promise 
-     */
-    verify(contactNumber, otp) {
-        return new Promise((resolve, reject) => {
-            let opts = {
-                authkey: this.authKey,
-                mobile: contactNumber,
-                otp: otp
-            };
-            resolve(Msg91Otp.doRequest("verifyRequestOTP.php", opts));
-        });
-    }
+  }
 
-    static doRequest(path, opts) {
-        return new Promise((resolve, reject) => {
-            MSG91.post(path, qs.stringify(opts)).then((response) => {
-                // response object errors
-                // This should return an error object not an array of errors
-                if (response.data.errors !== undefined) {
-                    return reject(response.data.errors);
-                }
-                resolve(response.data);
-            }).catch((error) => {
-                //return the error object received from server
-                return reject(error);
-            });
-        });
-    }
+  /**
+   * Send Otp to given mobile number
+   * @param {string} contactNumber receiver's mobile number along with country code
+   * @param {object, optional} args
+   * Return promise
+   */
+  async send(contactNumber, args = {}) {
+    const options = {
+      url: this.APIs['sendOtp'].url,
+      method: this.APIs['sendOtp'].method,
+      params: {
+        mobile: contactNumber,
+        authkey: this.authKey,
+        template_id: args.templateId || this.defaultOtpTemplateId,
+        otp_expiry: args.expiry || this.defaultOtpExpiry,
+        otp_length: args.otpLength || this.defaultOtpLength,
+        email: args.email || '',
+        invisible: args.invisible || 1
+      }
+    };
+    return await makeRequest(options);
+  }
+
+  /**
+   * Retry Otp to given mobile number
+   * @param {string} contactNumber receiver's mobile number along with country code
+   * @param {string} retryType, set voice to enable voice call verification
+   * Return promise
+   */
+  async retry(contactNumber, retryType = 'text') {
+    const options = {
+      url: this.APIs['resendOtp'].url,
+      method: this.APIs['resendOtp'].method,
+      params: {
+        mobile: contactNumber,
+        retrytype: retryType,
+        authkey: this.authKey
+      }
+    };
+    return await makeRequest(options);
+  }
+
+  /**
+   * Verify Otp to given mobile number
+   * @param {string} contactNumber receiver's mobile number along with country code
+   * @param {string} otp otp to verify
+   * Return promise
+   */
+  async verify(contactNumber, otp) {
+    const options = {
+      url: this.APIs['verifyOtp'].url,
+      method: this.APIs['verifyOtp'].method,
+      params: {
+        mobile: contactNumber,
+        otp: otp,
+        authkey: this.authKey
+      }
+    };
+    return await makeRequest(options);
+  }
+
 }
+
 module.exports = Msg91Otp;
