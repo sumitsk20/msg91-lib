@@ -1,0 +1,10 @@
+.git
+.DS_Store
+.gitignore
+.github
+CHANGELOG.md
+.dependabot
+.clinic
+.editorconfig
+.eslintignore
+.eslintrc.json

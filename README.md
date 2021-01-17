@@ -1,14 +1,22 @@
 # msg91-lib
 
-##### This is unofficial MSG91 library to send OTP and Messages via MSG91 APIs (_Message Support will be added soon_).
+[![NPM version](https://img.shields.io/npm/v/msg91-lib.svg?label=version)](https://www.npmjs.com/package/msg91-lib)
+[![NPM Licence](https://img.shields.io/npm/l/msg91-lib)](https://www.npmjs.com/package/msg91-lib)
+[![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/sumitsk20/msg91-lib)](https://www.npmjs.com/package/msg91-lib)
+[![NPM downloads](https://img.shields.io/npm/dt/msg91-lib)](https://www.npmjs.com/package/msg91-lib)
 
-### Set-up:
+##### This is unofficial MSG91 library to send OTP and Messages via MSG91 APIs (_Message Support will be added soon_)
+
+### Set-up
 
 Download the NPM module
-```
+
+```javascript
 npm install msg91-lib --save
 ```
+
 Require the package in your code.
+
 ```javascript
 const { msg91OTP } = require('msg91-lib');
 // or
@@ -18,27 +26,32 @@ const msg91OTP = require('msg91-lib').msg91OTP;
 ## OTP GUIDE
 
 Initialize with your [MSG91](https://msg91.com) auth key
+
 ```javascript
 const msg91otp = new msg91OTP({authKey='xxxxxxxxxxxxxxxxxxxxxx', templateId='xxxxxxxxxxxxxxxxxxxxxx'});
 ```
+
 That's all, you are ready to use otp service!
 
-### Note:
+### Note
+
 While constructing custom message template please include `{{otp}}` in your string, this will be replaced with otp value
 when sending OPT message.
 
 ### Requests
 
 You now have the send, retry and verify otp via following methods.
+
 ```javascript
 msg91otp.send(contactNumber, args); //args is object of optional parameter
 msg91otp.retry(contactNumber,retryVoice); //retryVoice is optional boolean value, set it true to enable voice call verification
 msg91otp.verify(contactNumber, otpToVerify);
 ```
 
-### Usage:
+### Usage
 
-**SEND OTP**
+#### SEND OTP
+
 ```javascript
   try {
     const response = await msg91otp.send(9999999999); // can be passed without country code and as string
@@ -47,7 +60,9 @@ msg91otp.verify(contactNumber, otpToVerify);
     console.log(error.toJson());
   }
 ```
+
 **Note:** In `msg91OTP.send()` you can pass second parameter a object of optional argument as:
+
 ```javascript
 // optional arugemnt object with possible acceptable values
 args = {
@@ -60,7 +75,8 @@ args = {
 await msg91otp.send("919999999999", args)
 ```
 
-**RETRY OTP**
+#### RETRY OTP
+
 ```javascript
   try {
     const response = await msg91otp.retry("9999999999"); // can be passed without country code and as number(int)
@@ -69,12 +85,15 @@ await msg91otp.send("919999999999", args)
     console.log(error.toJson());
   }
 ```
+
 **Note:** In `msg91otp.retry()` you can pass second parameter _retryVoice_ `true/false` to enable or disable voice call verification, by default it is set to `false`:
+
 ```javascript
 await msg91otp.retry("919999999999",true)
 ```
 
 **VERIFY OTP**
+
 ```javascript
   try {
     const response = await msg91otp.verify("9999999999"); // can be passed without country code and as number(int)
@@ -84,18 +103,17 @@ await msg91otp.retry("919999999999",true)
   }
 ```
 
-### Optional values that can be passed to `send()` function as object:
+### Optional values that can be passed to `send()` function as object
 
-**otp_length**   :	`number`	Number of digits in OTP (Keep in between 4 to 6)
+**otp_length**   : `number` Number of digits in OTP (Keep in between 4 to 6)
 
-**otp**          :	`number`	OTP to send and verify. If not sent, OTP will be generated.
+**otp**          : `number` OTP to send and verify. If not sent, OTP will be generated.
 
-**otp_expiry**   :	`number`	Expiry of OTP you can pass into minutes (default : 1440, max : 1440, min : 1)
+**otp_expiry**   : `number` Expiry of OTP you can pass into minutes (default : 1440, max : 1440, min : 1)
 
-**email**        :	`string`	Email ID on which you want to send OTP
+**email**        : `string` Email ID on which you want to send OTP
 
-**userip**        :	`string`	User IP
-
+**userip**        : `string` User IP
 
 ### Licence: (MIT License)
 

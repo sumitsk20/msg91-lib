@@ -1,0 +1,20 @@
+name: Publish new verison of msg91-lib
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJs
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install --ignore-scripts
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_REGISTRY_AUTH_TOKEN}}
