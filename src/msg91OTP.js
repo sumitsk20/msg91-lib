@@ -55,7 +55,8 @@ class Msg91Otp {
         otp_expiry: args.expiry || this.defaultOtpExpiry,
         otp_length: args.otpLength || this.defaultOtpLength,
         email: args.email || '',
-        invisible: args.invisible || 1
+        invisible: args.invisible || 1,
+        extra_param: args.extra_param || ''
       }
     };
     return await makeRequest(options);
