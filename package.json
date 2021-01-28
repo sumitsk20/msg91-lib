@@ -1,6 +1,6 @@
 {
   "name": "msg91-lib",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Unofficial msg91 library to send OTP & messages",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "url": "git+https://github.com/sumitsk20/msg91-lib.git"
   },
   "homepage": "https://github.com/sumitsk20/msg91-lib/tree/v2.x",
+  "types": "./types/index.d.ts",
   "keywords": [
     "msg91",
     "otp",
