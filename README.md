@@ -115,6 +115,8 @@ await msg91otp.retry("919999999999",true)
 
 **userip**        : `string` User IP
 
+**extra_param**   : Here you can pass the variables created in the SendOTP template.
+
 ### Licence: (MIT License)
 
 **Copyright (c) 2018 Sumeet Bhardwaj**
