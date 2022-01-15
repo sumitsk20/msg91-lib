@@ -7,6 +7,8 @@ const errorCodes = {};
 requestError('BAD_REQUEST_DATA', '%s', 400);
 requestError('NO_AUTH_KEY', 'You need to pass MSG91 auth key.', 400);
 requestError('NO_TEMPLATE_ID', 'You need to pass MSG91 valid template ID.', 400);
+requestError('NO_FLOW_ID', 'You need to pass MSG91 valid flow ID.', 400);
+requestError('NO_SENDER_ID', 'You need to pass MSG91 valid sender ID.', 400);
 
 function requestError(code, message, statusCode = 400, error_data = {}, Base = Error) {
   if (!code) throw new Error('Backend error code must not be empty');

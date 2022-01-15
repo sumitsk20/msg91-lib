@@ -5,7 +5,8 @@
 'use-strict';
 
 const msg91OTP = require('./src/msg91OTP');
+const msg91SMS = require('./src/msg91SMS');
 
 module.exports = {
-  msg91OTP,
+  msg91OTP,msg91SMS,
 };
