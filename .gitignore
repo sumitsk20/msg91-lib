@@ -8,3 +8,5 @@ npm-debug.log
 *.sublime-workspace
 .vscode
 out/
+.devcontainer
+test.js

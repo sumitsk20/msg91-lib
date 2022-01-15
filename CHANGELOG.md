@@ -8,3 +8,6 @@
 - followed some basic eslint rules
 - Modified Readme with aysnc/await examples
 - Error handling
+
+#### 2.0.3 (Jan 15, 2022)
+- Added support for Transactional SMS flow
